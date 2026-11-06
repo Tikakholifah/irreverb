@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verb Master Quest - Regular & Irregular Verbs (Kelas 6 SD)</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #a8edd9 0%, #fed6e3 100%);
+            --card-bg: #ffffff;
+            --primary: #4a6fa5;
+            --primary-dark: #3b5984;
+            --secondary: #ff9a9e;
+            --accent: #fbc2eb;
+            --success: #48bb78;
+            --danger: #f56565;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            color: var(--text-main);
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
+        }
+
+        /* Top Header & Progress */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: var(--shadow-md);
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .badge {
+            background: #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #edf2f7;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        /* Game Screens */
+        .screen {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .welcome-hero {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .start-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .start-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .info-pill {
+            display: inline-block;
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        /* Question Screen */
+        .question-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .tag-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .verb-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .tag-regular {
+            background: #e6fffa;
+            color: #234e52;
+        }
+
+        .tag-irregular {
+            background: #fff5f5;
+            color: #742a2a;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .question-highlight {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-option {
+            background: #ffffff;
+            border: 2px solid #cbd5e0;
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #ebf8ff;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-option:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-option.correct {
+            background: #c6f6d5 !important;
+            border-color: var(--success) !important;
+            color: #22543d !important;
+        }
+
+        .btn-option.incorrect {
+            background: #fed7d7 !important;
+            border-color: var(--danger) !important;
+            color: #742a2a !important;
+        }
+
+        /* Feedback Modal/Box */
+        .feedback-box {
+            display: none;
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background: #e6fffa;
+            border: 1px solid #b2f5ea;
+            color: #234e52;
+        }
+
+        .feedback-box.incorrect {
+            display: block;
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            color: #9b2c2c;
+        }
+
+        /* Next Button Container */
+        .action-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
+        }
+
+        /* General Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #4a6fa5 0%, #3b5984 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 14px 28px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(74, 111, 165, 0.4);
+        }
+
+        .btn-next {
+            width: auto;
+            min-width: 130px;
+            display: none;
+        }
+
+        /* End Screen */
+        .end-screen {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stars-container {
+            font-size: 45px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .star {
+            color: #cbd5e0;
+            transition: color 0.5s ease;
+        }
+
+        .star.filled {
+            color: #ecc94b;
+            animation: popIn 0.5s ease forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .end-title {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .end-message {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        .stats-summary {
+            background: #f7fafc;
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Top Navigation & Progress -->
+        <div class="header">
+            <div class="brand">
+                <div class="brand-icon">📚</div>
+                <div>
+                    <div class="title">Verb Master Quest</div>
+                </div>
+            </div>
+            <div class="badge" id="score-badge">Score: 0</div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <!-- 1. START SCREEN -->
+        <div class="screen start-screen active" id="start-screen">
+            <div class="welcome-hero">🌟</div>
+            <h1 class="start-title">Past Verb Quest!</h1>
+            <div class="info-pill">Bahasa Inggris Kelas 6 SD</div>
+            <p class="start-desc">
+                Mari uji kemampuanmu tentang <b>Regular Verb</b> (Kata Kerja Beraturan) dan <b>Irregular Verb</b> (Kata Kerja Tidak Beraturan) dalam bentuk Simple Past Tense (V2)!
+            </p>
+            <button class="btn-primary" id="btn-start">Mulai Petualangan 🚀</button>
+        </div>
+
+        <!-- 2. QUIZ SCREEN -->
+        <div class="screen" id="quiz-screen">
+            <div class="question-card">
+                <div class="tag-container">
+                    <span class="verb-tag tag-regular" id="verb-type-tag">Regular Verb</span>
+                </div>
+                <div class="question-text" id="question-text">
+                    Loading question...
+                </div>
+            </div>
+
+            <div class="options-grid" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="feedback-box" id="feedback-box">
+                <!-- Feedback message injected via JS -->
+            </div>
+
+            <div class="action-area">
+                <button class="btn-primary btn-next" id="btn-next">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- 3. END SCREEN -->
+        <div class="screen end-screen" id="end-screen">
+            <div class="stars-container">
+                <span class="star" id="star1">★</span>
+                <span class="star" id="star2">★</span>
+                <span class="star" id="star3">★</span>
+            </div>
+            <div class="score-display" id="final-score">0</div>
+            <h2 class="end-title" id="end-title">Luar Biasa!</h2>
+            <p class="end-message" id="end-message">Kamu telah menyelesaikan semua soal kata kerja past tense.</p>
+            
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <span class="stat-value" id="correct-count">0/10</span>
+                    <span class="stat-label">Benar</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="accuracy-count">0%</span>
+                    <span class="stat-label">Akurasi</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-restart">Main Lagi 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // --- WEB AUDIO API SOUND EFFECTS ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                // Happy high double chime
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'incorrect') {
+                // Soft buzz down tone
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, now); // A3
+                osc.frequency.setValueAtTime(174.61, now + 0.15); // F3
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'click') {
+                // Pop click
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'win') {
+                // Arpeggio fanfare
+                const notes = [400, 500, 600, 800];
+                notes.forEach((freq, index) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    noteOsc.type = 'sine';
+                    noteOsc.frequency.setValueAtTime(freq, now + index * 0.08);
+                    noteGain.gain.setValueAtTime(0.2, now + index * 0.08);
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.08 + 0.2);
+                    noteOsc.start(now + index * 0.08);
+                    noteOsc.stop(now + index * 0.08 + 0.2);
+                });
+            }
+        }
+
+        // --- QUESTION BANK ---
+        const questions = [
+            {
+                id: 1,
+                type: 'Regular Verb',
+                text: 'What is the past form (V2) of "<span class="question-highlight">walk</span>"?',
+                options: ['walked', 'walking', 'walks', 'wolk'],
+                answer: 0,
+                explanation: '<b>Walk</b> adalah Regular Verb. Cukup tambahkan akhiran <b>-ed</b> menjadi <b>walked</b>.'
+            },
+            {
+                id: 2,
+                type: 'Irregular Verb',
+                text: 'Yesterday, Made _____ (<span class="question-highlight">go</span>) to the beach.',
+                options: ['goed', 'went', 'gone', 'going'],
+                answer: 1,
+                explanation: '<b>Go</b> adalah Irregular Verb. Bentuk lampau (V2) dari "go" berubah menjadi <b>went</b>.'
+            },
+            {
+                id: 3,
+                type: 'Regular Verb',
+                text: 'Last night, Cici _____ (<span class="question-highlight">study</span>) English.',
+                options: ['studys', 'studyed', 'studied', 'studying'],
+                answer: 2,
+                explanation: '<b>Study</b> adalah Regular Verb berakhiran konsonan+Y. Ubah <b>-y</b> menjadi <b>-ied</b> $\\rightarrow$ <b>studied</b>.'
+            },
+            {
+                id: 4,
+                type: 'Irregular Verb',
+                text: 'Last Sunday, Joshua _____ (<span class="question-highlight">eat</span>) fried rice.',
+                options: ['eaten', 'eated', 'ate', 'eating'],
+                answer: 2,
+                explanation: '<b>Eat</b> adalah Irregular Verb. Bentuk lampau (V2) dari "eat" adalah <b>ate</b>.'
+            },
+            {
+                id: 5,
+                type: 'Regular Verb',
+                text: 'Mother _____ (<span class="question-highlight">cook</span>) soup yesterday afternoon.',
+                options: ['cooked', 'cooks', 'cooking', 'cooky'],
+                answer: 0,
+                explanation: '<b>Cook</b> adalah Regular Verb. Bentuk lampau (V2) adalah <b>cooked</b>.'
+            },
+            {
+                id: 6,
+                type: 'Irregular Verb',
+                text: 'Yesterday, father _____ (<span class="question-highlight">read</span>) a newspaper.',
+                options: ['readed', 'reading', 'reads', 'read'],
+                answer: 3,
+                explanation: '<b>Read</b> adalah Irregular Verb unik! Bentuk tulisan V2 tetap <b>read</b> (dibaca: /red/).'
+            },
+            {
+                id: 7,
+                type: 'Irregular Verb',
+                text: 'Kimi _____ (<span class="question-highlight">drink</span>) a glass of milk this morning.',
+                options: ['drank', 'drinked', 'drunk', 'drinks'],
+                answer: 0,
+                explanation: '<b>Drink</b> adalah Irregular Verb. Bentuk lampau (V2) dari "drink" adalah <b>drank</b>.'
+            },
+            {
+                id: 8,
+                type: 'Regular Verb',
+                text: 'They _____ (<span class="question-highlight">play</span>) football last Saturday.',
+                options: ['plaied', 'played', 'playing', 'plays'],
+                answer: 1,
+                explanation: '<b>Play</b> adalah Regular Verb berakhiran vokal+Y. Cukup tambah <b>-ed</b> $\\rightarrow$ <b>played</b>.'
+            },
+            {
+                id: 9,
+                type: 'Irregular Verb',
+                text: 'She _____ (<span class="question-highlight">buy</span>) a new book yesterday.',
+                options: ['buyed', 'buying', 'bought', 'bough'],
+                answer: 2,
+                explanation: '<b>Buy</b> adalah Irregular Verb. Bentuk V2 dari "buy" berubah menjadi <b>bought</b>.'
+            },
+            {
+                id: 10,
+                type: 'Irregular Verb',
+                text: 'I _____ (<span class="question-highlight">see</span>) a big elephant at the zoo last week.',
+                options: ['seed', 'saw', 'seen', 'seeing'],
+                answer: 1,
+                explanation: '<b>See</b> adalah Irregular Verb. Bentuk lampau (V2) dari "see" adalah <b>saw</b>.'
+            }
+        ];
+
+        // --- GAME STATE VARIABLES ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswersCount = 0;
+        let isAnswered = false;
+
+        // --- DOM ELEMENTS ---
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        const btnStart = document.getElementById('btn-start');
+        const btnNext = document.getElementById('btn-next');
+        const btnRestart = document.getElementById('btn-restart');
+
+        const scoreBadge = document.getElementById('score-badge');
+        const progressBar = document.getElementById('progress-bar');
+
+        const verbTypeTag = document.getElementById('verb-type-tag');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackBox = document.getElementById('feedback-box');
+
+        // End screen elements
+        const finalScoreEl = document.getElementById('final-score');
+        const endTitleEl = document.getElementById('end-title');
+        const endMessageEl = document.getElementById('end-message');
+        const correctCountEl = document.getElementById('correct-count');
+        const accuracyCountEl = document.getElementById('accuracy-count');
+
+        // --- EVENT LISTENERS ---
+        btnStart.addEventListener('click', () => {
+            initAudio();
+            playSound('click');
+            startGame();
+        });
+
+        btnNext.addEventListener('click', () => {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        });
+
+        btnRestart.addEventListener('click', () => {
+            playSound('click');
+            startGame();
+        });
+
+        // --- GAME LOGIC FUNCTIONS ---
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswersCount = 0;
+            updateScoreUI();
+            
+            startScreen.classList.remove('active');
+            endScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            const q = questions[currentQuestionIndex];
+
+            // Reset UI State
+            feedbackBox.className = 'feedback-box';
+            feedbackBox.style.display = 'none';
+            btnNext.style.display = 'none';
+            optionsContainer.innerHTML = '';
+
+            // Update Progress Bar
+            const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            // Tag style & text
+            verbTypeTag.textContent = q.type;
+            if (q.type === 'Regular Verb') {
+                verbTypeTag.className = 'verb-tag tag-regular';
+            } else {
+                verbTypeTag.className = 'verb-tag tag-irregular';
+            }
+
+            // Set question text
+            questionText.innerHTML = q.text;
+
+            // Render option buttons
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.textContent = optText;
+                btn.addEventListener('click', () => checkAnswer(idx, btn));
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, selectedBtn) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = questions[currentQuestionIndex];
+            const buttons = optionsContainer.querySelectorAll('.btn-option');
+
+            // Disable all buttons to prevent double click
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === q.answer) {
+                // Correct Answer
+                playSound('correct');
+                selectedBtn.classList.add('correct');
+                score += 10;
+                correctAnswersCount++;
+                updateScoreUI();
+
+                feedbackBox.innerHTML = `<strong>✨ Hebat! Correct!</strong><br>${q.explanation}`;
+                feedbackBox.className = 'feedback-box correct';
+            } else {
+                // Wrong Answer
+                playSound('incorrect');
+                selectedBtn.classList.add('incorrect');
+                // Highlight the right answer
+                buttons[q.answer].classList.add('correct');
+
+                feedbackBox.innerHTML = `<strong>❌ Oops! Incorrect!</strong><br>${q.explanation}`;
+                feedbackBox.className = 'feedback-box incorrect';
+            }
+
+            // Show Next Button
+            btnNext.style.display = 'inline-block';
+        }
+
+        function updateScoreUI() {
+            scoreBadge.textContent = `Score: ${score}`;
+        }
+
+        function showEndScreen() {
+            playSound('win');
+            quizScreen.classList.remove('active');
+            endScreen.classList.add('active');
+
+            // Complete progress bar
+            progressBar.style.width = '100%';
+
+            finalScoreEl.textContent = score;
+            correctCountEl.textContent = `${correctAnswersCount}/${questions.length}`;
+            const accuracy = Math.round((correctAnswersCount / questions.length) * 100);
+            accuracyCountEl.textContent = `${accuracy}%`;
+
+            // Star Rating Logic & Messages
+            const star1 = document.getElementById('star1');
+            const star2 = document.getElementById('star2');
+            const star3 = document.getElementById('star3');
+
+            star1.classList.remove('filled');
+            star2.classList.remove('filled');
+            star3.classList.remove('filled');
+
+            if (score >= 90) {
+                star1.classList.add('filled');
+                star2.classList.add('filled');
+                star3.classList.add('filled');
+                endTitleEl.textContent = '🏆 Verb Master!';
+                endMessageEl.textContent = 'Luar biasa! Kamu sudah sangat menguasai Regular & Irregular Verbs!';
+            } else if (score >= 60) {
+                star1.classList.add('filled');
+                star2.classList.add('filled');
+                endTitleEl.textContent = '🌟 Good Job!';
+                endMessageEl.textContent = 'Bagus sekali! Tingkatkan lagi latihanmu untuk meraih nilai sempurna.';
+            } else {
+                star1.classList.add('filled');
+                endTitleEl.textContent = '💪 Tetap Semangat!';
+                endMessageEl.textContent = 'Jangan menyerah! Pelajari kembali perubahan kata kerja V1 ke V2 dan coba lagi!';
+            }
+        }
+    </script>
+</body>
+</html>
